@@ -27,7 +27,7 @@ class Interviewer:
                 QuestionType.INTERPERSONAL_EFFECTIVENESS: 1,
                 QuestionType.ORGANIZATIONAL_STEWARDSHIP: 1,
                 QuestionType.PERSONAL_MASTERY: 1,
-                QuestionType.SYSTEMS_THINKING: 1,
+                QuestionType.SYSTEMS_THINKING: 0,
                 QuestionType.TECHNICAL_SKILLS: 1
             }),
             streaming: bool = False
@@ -92,6 +92,10 @@ class Interviewer:
             callbacks=[StreamingStdOutLimitedCallbackHandler()]
         ), prompt=chat_prompt
         )
+
+        if self.streaming:
+            print(f'\n\nInterviewer: ')
+
         output = chain.predict(
             company=self.company,
             job=self.job,
@@ -144,6 +148,10 @@ class Interviewer:
             callbacks=[StreamingStdOutLimitedCallbackHandler()]
         ), prompt=chat_prompt
         )
+
+        if self.streaming:
+            print('\n\nInterviewer: ')
+
         output = chain.predict(
             company=self.company,
             job=self.job,
@@ -174,6 +182,10 @@ class Interviewer:
             callbacks=[StreamingStdOutLimitedCallbackHandler()]
         ), prompt=chat_prompt
         )
+
+        if self.streaming:
+            print('\n\nInterviewer: ')
+
         output = chain.predict(
             company=self.company,
             job=self.job,
@@ -263,6 +275,8 @@ class Interviewer:
             summary = f'{summary}{criteria}:\n\n'
             if verbose:
                 print_limit(f'{criteria}:\n\n')
+            if self.streaming:
+                chain.llm.callbacks[0].line = ''
 
             for question in questions:
                 output = chain.predict(
@@ -276,15 +290,18 @@ class Interviewer:
                     final_instruction=final_instruction
                 ).strip()
                 summary = f'{summary}{output}\n\n'
-                if verbose:
+                if verbose and not self.streaming:
                     print_limit(f'{output}\n\n')
+                if self.streaming:
+                    print('\n')
+                    chain.llm.callbacks[0].line = ''
 
             summary = f'{summary}\n'
             if verbose:
                 print(' ')
 
         overall = self.overall_recommendation(summary)
-        if verbose:
+        if verbose and not self.streaming:
             print_limit(f'\n\nRecommendation:\n\n{overall}')
 
         summary = f'Recommendation:\n\n{overall}\n\n\n{summary}'
@@ -319,6 +336,10 @@ class Interviewer:
             callbacks=[StreamingStdOutLimitedCallbackHandler()]
         ), prompt=chat_prompt
         )
+
+        if self.streaming:
+            print('\nRecommendation: \n')
+
         output = chain.predict(
             company=self.company,
             job=self.job,

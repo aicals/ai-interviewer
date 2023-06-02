@@ -44,22 +44,25 @@ class InterviewSimulator:
                 interviewer_message.text = self.interviewer.personalize_the_question(
                     interviewer_message.text
                 )
+                interviewer_message.is_streamed = True
 
             # This means that the previous candidate reply contain a question
             # from the candidate. Reply it before finishing the interview
             if self.is_interview_over:
                 answer = self.interviewer.answer_candidate(candidate_reply)
                 interviewer_message.text = f'{answer}\n\n{interviewer_message.text}'
+                interviewer_message.is_streamed = True
 
             self.log(
-                f'Interviewer:\n{interviewer_message.text}\n\n',
-                interviewer_message.question_type
+                f'\n\nInterviewer:\n{interviewer_message.text}',
+                interviewer_message.question_type,
+                verbose=not interviewer_message.is_streamed
             )
 
             # Make the candidate reply to the personalized question
             candidate_reply = self.candidate.reply(interviewer_message.text)
             self.log(
-                f'{self.candidate.name}:\n{candidate_reply}\n\n',
+                f'\n\n{self.candidate.name}:\n{candidate_reply}',
                 interviewer_message.question_type
             )
 
@@ -85,14 +88,14 @@ class InterviewSimulator:
                         )
 
                     self.log(
-                        f'Interviewer follow-up:\n{follow_up}\n\n',
+                        f'\n\nInterviewer follow-up:\n{follow_up}',
                         interviewer_message.question_type
                     )
 
                     # Make the candidate reply to the personalized follow-up
                     candidate_reply = self.candidate.reply(follow_up)
                     self.log(
-                        f'{self.candidate.name}:\n{candidate_reply}\n\n',
+                        f'\n\n{self.candidate.name}:\n{candidate_reply}',
                         interviewer_message.question_type
                     )
 

@@ -19,7 +19,7 @@ class StreamingStdOutLimitedCallbackHandler(BaseCallbackHandler):
             self.line = ""
 
         self.line += token
-        if len(self.line) > self.limit:
+        if len(self.line) > self.limit and len(token) > 1:
             sys.stdout.write(f'\n{token.strip()}')
             sys.stdout.flush()
             self.line = token

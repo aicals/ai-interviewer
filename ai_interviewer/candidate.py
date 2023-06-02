@@ -89,7 +89,6 @@ class Candidate:
                 streaming=self.streaming,
                 callbacks=[StreamingStdOutLimitedCallbackHandler()]
             ), prompt=chat_prompt)
-        # chain = LLMChain(llm=ChatOpenAI(temperature=0.5), prompt=chat_prompt)
 
         return chain.predict(
             name=self.name,
@@ -144,7 +143,8 @@ class Candidate:
     def reply(self, message: str):
         """Bring the agent to life, enabling it to reply to messages"""
         if self.streaming:
-            print(f'{self.name}:\n')
+            print(f'\n\n{self.name}: ')
+            self.conversation_chain.llm.callbacks[0].line = ''
 
         return self.conversation_chain.predict(
             input=message,

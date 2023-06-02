@@ -30,6 +30,7 @@ class Question:
     question_type: str = ''
     text: str = ''
     follow_ups: list = field(default_factory=lambda: [])
+    is_streamed: bool = False
 
 
 def sample_questions(

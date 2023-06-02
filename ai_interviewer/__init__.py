@@ -106,6 +106,7 @@ def main(company, job, area, years_of_experience_job, candidate_name,
             job=job,
             area=area,
             company=company,
+            streaming=streaming
         )
         summary = interviewer.summarize_interview(short_transcript)
         with summary_file.open('w') as file:
