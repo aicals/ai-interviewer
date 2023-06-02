@@ -10,7 +10,7 @@ from langchain.prompts.chat import (
 from langchain.memory import ConversationBufferWindowMemory
 
 from .question_bank import sample_questions, QuestionType, Question
-from .util import print_limit
+from .util import print_limit, StreamingStdOutLimitedCallbackHandler
 
 
 class Interviewer:
@@ -30,12 +30,14 @@ class Interviewer:
                 QuestionType.SYSTEMS_THINKING: 1,
                 QuestionType.TECHNICAL_SKILLS: 1
             }),
+            streaming: bool = False
     ):
         self.candidate_name = candidate_name
         self.first_name = candidate_name.split(' ')[0]
         self.job = job,
         self.area = area
         self.company = company
+        self.streaming = streaming
 
         ice_breakers = [
             f"Hi! Welcome, {self.first_name}!",
@@ -84,7 +86,12 @@ class Interviewer:
             human_message_prompt
         ])
 
-        chain = LLMChain(llm=ChatOpenAI(temperature=0.5), prompt=chat_prompt)
+        chain = LLMChain(llm=ChatOpenAI(
+            temperature=0.5,
+            streaming=self.streaming,
+            callbacks=[StreamingStdOutLimitedCallbackHandler()]
+        ), prompt=chat_prompt
+        )
         output = chain.predict(
             company=self.company,
             job=self.job,
@@ -131,7 +138,12 @@ class Interviewer:
             human_message_prompt
         ])
 
-        chain = LLMChain(llm=ChatOpenAI(temperature=0.5), prompt=chat_prompt)
+        chain = LLMChain(llm=ChatOpenAI(
+            temperature=0.5,
+            streaming=self.streaming,
+            callbacks=[StreamingStdOutLimitedCallbackHandler()]
+        ), prompt=chat_prompt
+        )
         output = chain.predict(
             company=self.company,
             job=self.job,
@@ -156,7 +168,12 @@ class Interviewer:
             human_message_prompt
         ])
 
-        chain = LLMChain(llm=ChatOpenAI(temperature=0.5), prompt=chat_prompt)
+        chain = LLMChain(llm=ChatOpenAI(
+            temperature=0.5,
+            streaming=self.streaming,
+            callbacks=[StreamingStdOutLimitedCallbackHandler()]
+        ), prompt=chat_prompt
+        )
         output = chain.predict(
             company=self.company,
             job=self.job,
@@ -195,7 +212,12 @@ class Interviewer:
             human_message_prompt
         ])
 
-        chain = LLMChain(llm=ChatOpenAI(temperature=0.5), prompt=chat_prompt)
+        chain = LLMChain(llm=ChatOpenAI(
+            temperature=0.5,
+            streaming=self.streaming,
+            callbacks=[StreamingStdOutLimitedCallbackHandler()]
+        ), prompt=chat_prompt
+        )
 
         final_instruction = (
             'Please support your answers with specific examples provided by '
@@ -291,7 +313,12 @@ class Interviewer:
             human_message_prompt
         ])
 
-        chain = LLMChain(llm=ChatOpenAI(temperature=0.5), prompt=chat_prompt)
+        chain = LLMChain(llm=ChatOpenAI(
+            temperature=0.5,
+            streaming=self.streaming,
+            callbacks=[StreamingStdOutLimitedCallbackHandler()]
+        ), prompt=chat_prompt
+        )
         output = chain.predict(
             company=self.company,
             job=self.job,

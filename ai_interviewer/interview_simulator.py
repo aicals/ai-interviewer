@@ -100,7 +100,7 @@ class InterviewSimulator:
             self,
             message: str,
             question_type: QuestionType,
-            verbose: bool = True
+            verbose: bool = False
     ):
         self.full_transcript = f'{self.full_transcript}{message}'
 

@@ -9,6 +9,7 @@ from langchain.prompts.chat import (
 )
 from langchain.schema import BaseOutputParser
 import json
+from .util import StreamingStdOutLimitedCallbackHandler
 
 
 class JobDescription(NamedTuple):
@@ -45,7 +46,8 @@ def create_job_description(
         company: str,
         job: str,
         years_of_experience: int,
-        area: str
+        area: str,
+        streaming: bool = False
 ) -> JobDescription:
     system_message_prompt = SystemMessagePromptTemplate.from_template(
         template="You are a helpful Human Resources assistant who creates "
@@ -67,7 +69,16 @@ def create_job_description(
         human_message_prompt
     ])
 
-    chain = LLMChain(llm=ChatOpenAI(temperature=0), prompt=chat_prompt)
+    if streaming:
+        chain = LLMChain(
+            llm=ChatOpenAI(
+                temperature=0,
+                streaming=True,
+                callbacks=[StreamingStdOutLimitedCallbackHandler()]
+            ), prompt=chat_prompt)
+    else:
+        chain = LLMChain(llm=ChatOpenAI(temperature=0), prompt=chat_prompt)
+
     output = chain.predict(
         company=company,
         job=job,

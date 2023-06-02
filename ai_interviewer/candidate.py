@@ -9,6 +9,7 @@ from langchain.prompts.chat import (
     SystemMessagePromptTemplate,
     HumanMessagePromptTemplate,
 )
+from .util import StreamingStdOutLimitedCallbackHandler
 
 
 class Candidate:
@@ -22,7 +23,8 @@ class Candidate:
             work_experiences: int,
             company: str,
             resume: str | None = None,
-            verbose: bool = False
+            verbose: bool = False,
+            streaming: bool = False
     ):
         """Initializes the agent"""
         self.name = name
@@ -33,6 +35,7 @@ class Candidate:
         self.requirements = requirements
         self.company = company
         self.verbose = verbose
+        self.streaming = streaming
         if resume is None or resume == '':
             self.resume = self.create_resume()
         else:
@@ -80,7 +83,14 @@ class Candidate:
             system_message_prompt,
             human_message_prompt
         ])
-        chain = LLMChain(llm=ChatOpenAI(temperature=0.5), prompt=chat_prompt)
+        chain = LLMChain(
+            llm=ChatOpenAI(
+                temperature=0.5,
+                streaming=self.streaming,
+                callbacks=[StreamingStdOutLimitedCallbackHandler()]
+            ), prompt=chat_prompt)
+        # chain = LLMChain(llm=ChatOpenAI(temperature=0.5), prompt=chat_prompt)
+
         return chain.predict(
             name=self.name,
             job=self.job,
@@ -116,8 +126,12 @@ class Candidate:
         )
 
         conversation_chain = ConversationChain(
-            llm=ChatOpenAI(temperature=0.5),
-            verbose=self.verbose,
+            llm=ChatOpenAI(
+                temperature=0.5,
+                streaming=self.streaming,
+                callbacks=[StreamingStdOutLimitedCallbackHandler()]
+            ),
+            verbose=self.verbose and not self.streaming,
             memory=ConversationBufferWindowMemory(
                 human_prefix='Interviewer',
                 ai_prefix=self.name,
@@ -129,6 +143,9 @@ class Candidate:
 
     def reply(self, message: str):
         """Bring the agent to life, enabling it to reply to messages"""
+        if self.streaming:
+            print(f'{self.name}:\n')
+
         return self.conversation_chain.predict(
             input=message,
             stop="Interviewer:"

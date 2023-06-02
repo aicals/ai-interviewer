@@ -9,7 +9,7 @@ from .util import BASE_DIR, print_limit
 
 def main(company, job, area, years_of_experience_job, candidate_name,
          years_of_experience_candidate, work_experiences, data_dir,
-         force_reload):
+         force_reload, streaming=True):
 
     # Create job description
     print('Creating job description...\n')
@@ -21,14 +21,16 @@ def main(company, job, area, years_of_experience_job, candidate_name,
             company=company,
             job=job,
             years_of_experience=years_of_experience_job,
-            area=area
+            area=area,
+            streaming=streaming
         )
         job_description.save(job_description_file)
     else:
         with job_description_file.open('r') as file:
             job_description = JobDescription(**json.load(file))
 
-    print_limit(job_description.text)
+    if not streaming or job_description_file.exists():
+        print_limit(job_description.text)
     print('\n\n' + '*' * 80 + '\n')
 
     # Create candidate
@@ -45,14 +47,16 @@ def main(company, job, area, years_of_experience_job, candidate_name,
             area=area,
             requirements=job_description.requirements,
             work_experiences=work_experiences,
-            company=company
+            company=company,
+            streaming=streaming
         )
         candidate.save(candidate_file)
     else:
         with candidate_file.open('r') as file:
-            candidate = Candidate(**json.load(file))
+            candidate = Candidate(**json.load(file), streaming=streaming)
 
-    print_limit(candidate.resume)
+    if not streaming or candidate_file.exists():
+        print_limit(candidate.resume)
     print('\n\n' + '*' * 80 + '\n')
 
     # Simulate the interview
@@ -67,6 +71,7 @@ def main(company, job, area, years_of_experience_job, candidate_name,
             job=job,
             area=area,
             company=company,
+            streaming=streaming
         )
         simulator = InterviewSimulator(
             interviewer=interviewer,

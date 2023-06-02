@@ -1,7 +1,31 @@
 from pathlib import Path
+import sys
+from typing import Any
 
+from langchain.callbacks.base import BaseCallbackHandler
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+class StreamingStdOutLimitedCallbackHandler(BaseCallbackHandler):
+    def __init__(self, limit=80):
+        super().__init__()
+        self.line = ""
+        self.limit = limit
+
+    def on_llm_new_token(self, token: str, **kwargs: Any) -> None:
+        """Run on new LLM token. Only available when streaming is enabled."""
+        if token == '\n' or '\n' in token:
+            self.line = ""
+
+        self.line += token
+        if len(self.line) > self.limit:
+            sys.stdout.write(f'\n{token.strip()}')
+            sys.stdout.flush()
+            self.line = token
+        else:
+            sys.stdout.write(token)
+            sys.stdout.flush()
 
 
 def print_limit(text, line_limit=80):
