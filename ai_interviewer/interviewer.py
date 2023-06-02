@@ -7,7 +7,7 @@ from langchain.prompts.chat import (
     SystemMessagePromptTemplate,
     HumanMessagePromptTemplate,
 )
-from langchain.schema import BaseMemory
+from langchain.memory import ConversationBufferWindowMemory
 
 from .question_bank import sample_questions, QuestionType, Question
 from .util import print_limit
@@ -96,10 +96,10 @@ class Interviewer:
     def generate_followup_question(
             self,
             raw_follow_up: str | None,
-            memory: BaseMemory | str,
+            memory: ConversationBufferWindowMemory | str,
     ) -> str:
-        if isinstance(memory, BaseMemory):
-            history = memory.buffer
+        if isinstance(memory, ConversationBufferWindowMemory):
+            history = memory.load_memory_variables({})[memory.memory_key]
         elif isinstance(memory, str):
             history = memory
 
@@ -262,6 +262,9 @@ class Interviewer:
                 print(' ')
 
         overall = self.overall_recommendation(summary)
+        if verbose:
+            print_limit(f'\n\nRecommendation:\n\n{overall}')
+
         summary = f'Recommendation:\n\n{overall}\n\n\n{summary}'
         return summary
 

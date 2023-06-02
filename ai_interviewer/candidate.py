@@ -120,7 +120,8 @@ class Candidate:
             verbose=self.verbose,
             memory=ConversationBufferWindowMemory(
                 human_prefix='Interviewer',
-                ai_prefix=self.name
+                ai_prefix=self.name,
+                k=4
             ),
             prompt=prompt
         )
