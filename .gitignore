@@ -1,0 +1,14 @@
+*.egg-info/
+.idea/
+*.iml
+**/__pycache__/
+**/*.pyc
+**/*.DS_Store
+**/.ipynb_checkpoints
+.env
+.DS_Store
+logs/
+~*
+.vscode
+data/
+
