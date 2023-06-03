@@ -27,4 +27,9 @@ It's important to have an `.env` file with the following variables:
 OPENAI_API_KEY=sk-your-openai-api-key
 ```
 
+### Contact
+Hi, I'm Carlos. I'm an aerospace engineer specialized in computer science and artificial intelligence.
+I'm building [Codebook AI](https://codebook.ai/), sharing how to build AI systems that solve real-world problems.
+
 For questions, comments, suggestions, please don't hesitate to contact me at [cs@codebook.ai](mailto:cs@codebook.ai).
+
