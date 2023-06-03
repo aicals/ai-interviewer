@@ -26,3 +26,5 @@ It's important to have an `.env` file with the following variables:
 ```bash
 OPENAI_API_KEY=sk-your-openai-api-key
 ```
+
+For questions, comments, suggestions, please don't hesitate to contact me at [cs@codebook.ai](mailto:cs@codebook.ai).
