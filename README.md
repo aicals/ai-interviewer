@@ -1,7 +1,7 @@
 # How to make an AI assistant to automate job interviews
 ### Creating an AI agent to conduct structured behavioral interviews
 
-![Interview](https://github.com/aicals/ai-interviewer/master/ai_interviewer/1.gif "Interview")
+![Interview](https://raw.githubusercontent.com/aicals/ai-interviewer/master/ai_interviewer/1.gif "Interview")
 
 Hiring is the single most important people activity in any organization. Any outstanding organization spends a great amount of energy in attracting, assessing and cultivating new hires. However, this process is painful and very time-consuming. **Can we use AI to help in this process?**
 
